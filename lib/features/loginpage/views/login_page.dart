@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../controller/login_controller.dart';
@@ -16,26 +19,31 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true;
 
   void _login() async {
-    final username = emailController.text;
-    final password = passwordController.text;
-
-    print(username);
-    print(password);
-
-    bool isSuccess = await loginController.login(username, password);
-
-    if (isSuccess) {
+    final response = await loginController.login(
+        emailController.text, passwordController.text);
+    if (response.statusCode == 200 &&
+        jsonDecode(response.body)['role'] == "TEACHER") {
+      Fluttertoast.showToast(
+          msg: "Login Successful",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Color(0xff23353F),
+          textColor: Colors.white,
+          fontSize: 16.0);
       Get.offAllNamed('/home');
     } else {
-      // Show error message
-      Get.snackbar(
-        'Login Failed',
-        'Invalid email or password',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      Fluttertoast.showToast(
+          msg: (jsonDecode(response.body)["error"]).toString(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red[500],
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
@@ -90,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.blueGrey[800],
+                                color: Color(0xff23353F),
                               ),
                             ),
                           ),
@@ -107,18 +115,20 @@ class _LoginPageState extends State<LoginPage> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
                                   color: Colors.grey,
                                 )),
                             child: TextFormField(
                               controller: emailController,
                               decoration: InputDecoration(
-                                  border: const OutlineInputBorder(
-                                      borderSide: BorderSide.none),
-                                  icon: const Icon(Icons.person),
-                                  iconColor: Colors.blueGrey[800]),
-                              cursorColor: Colors.blueGrey[800],
+                                border: const OutlineInputBorder(
+                                    borderSide: BorderSide.none),
+                                icon: Icon(
+                                  Icons.person,
+                                  color: Color(0xff23353F),
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -134,20 +144,35 @@ class _LoginPageState extends State<LoginPage> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
                                   color: Colors.grey,
                                 )),
                             child: TextFormField(
                               controller: passwordController,
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscureText
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                      color: _obscureText
+                                          ? Colors.grey
+                                          : Color(0xff23353F),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureText = !_obscureText;
+                                      });
+                                    },
+                                  ),
+                                  border: const OutlineInputBorder(
                                       borderSide: BorderSide.none),
                                   icon: Icon(
                                     Icons.lock,
+                                    color: Color(0xff23353F),
                                   )),
-                              obscureText: true,
-                              cursorColor: Colors.blueGrey[800],
+                              obscureText: _obscureText,
                             ),
                           ),
                           const SizedBox(
@@ -159,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                               onPressed: _login,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                    Colors.blueGrey[800], // background
+                                    Color(0xff23353F), // background
                               ),
                               child: const Text('Login'),
                             ),

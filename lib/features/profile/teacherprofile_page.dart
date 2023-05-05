@@ -1,8 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:major_app_teacher/features/loginpage/controller/login_controller.dart';
 
-class TeacherProfilePage extends StatelessWidget {
-  const TeacherProfilePage({super.key});
+class TeacherProfilePage extends StatefulWidget {
+  TeacherProfilePage({super.key});
+
+  @override
+  State<TeacherProfilePage> createState() => _TeacherProfilePageState();
+}
+
+class _TeacherProfilePageState extends State<TeacherProfilePage> {
+  final LoginController loginController = Get.put(LoginController());
+
+  void logoutHandler() {
+    print('loggedout');
+    loginController.logout();
+    Get.snackbar("Success", "Logout Successful",
+        icon: const Icon(
+          Icons.done,
+          color: Colors.white,
+          size: 32,
+        ),
+        duration: const Duration(milliseconds: 1200),
+        backgroundColor: Colors.green,
+        colorText: Colors.white);
+    Get.toNamed("/");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +96,7 @@ class TeacherProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Card(
                     // backgroundColor: CustomTheme.primary,
-                    color: Colors.blueGrey[800],
+                    color: Color(0xff23353F),
                     child: Padding(
                       padding: const EdgeInsets.all(15),
                       child: Column(
@@ -100,7 +128,7 @@ class TeacherProfilePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
                               Text(
-                                'Pulchowk Campus, ',
+                                'Pulchowk Campus',
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.normal,
@@ -129,134 +157,11 @@ class TeacherProfilePage extends StatelessWidget {
             ]),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //personal info
-                const Text("Personal Information",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold)),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text("Full Name",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal)),
-                          Text("AMAN SHAKYA",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                          Text("Contact Number",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal)),
-                          Text("9841218877",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                          Text("Email",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal)),
-                          Text("aman.shakya@ioe.edu.np",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 10),
-                //academic info
-                const Text("Academic Information",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold)),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text("National Institute of Informatics (NII)",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal)),
-                          Text("PhD in Informatics",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                          Text(
-                              "The Graduate University for Advanced Studies (SOKENDAI), Japan",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal)),
-                          Text("Department of Informatics",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                          Text("Asian Institute of Engineering, Thailand",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal)),
-                          Text("Masters of Engineering in ICT",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                          Text("Institute of Engineering, TU",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal)),
-                          Text("BE in Computer Engineering",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: ElevatedButton(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => EditProfile()),
-                // );
-              },
+              onPressed: logoutHandler,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey[800], // background
+                backgroundColor: Color(0xff23353F), // background
               ),
               child: const Text('Log Out'),
             ),

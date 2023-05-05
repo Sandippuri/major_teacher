@@ -1,56 +1,25 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:major_app_teacher/features/attendance/controller/attendance_controller.dart';
 
-class AttendancePage extends StatefulWidget {
+class AttendanceRecord extends StatefulWidget {
   final String? lectureId;
-  final String? sectionId;
 
-  AttendancePage({this.lectureId, this.sectionId, super.key});
+  AttendanceRecord({this.lectureId, super.key});
 
   @override
-  State<AttendancePage> createState() => _AttendancePageState();
+  State<AttendanceRecord> createState() => _AttendanceRecordState();
 }
 
-class _AttendancePageState extends State<AttendancePage> {
+class _AttendanceRecordState extends State<AttendanceRecord> {
   final ApiController _apiController = Get.put(ApiController());
 
   @override
   void initState() {
     super.initState();
-    _apiController.fetchStudent(_apiController.sectionId);
-  }
-
-  void submitAttendance(context) async {
-    final response = await _apiController.postAttendance(
-        widget.lectureId, _apiController.selectedStudents);
-    try {
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(
-            msg: "Attendance Saved",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xff23353F),
-            textColor: Colors.white,
-            fontSize: 16.0);
-        Navigator.pop(context);
-        _apiController.selectedStudents.clear();
-      }
-    } catch (err) {
-      Fluttertoast.showToast(
-          msg: jsonDecode(response.body)['error'].toString(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff23353F),
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
+    print(widget.lectureId);
+    _apiController.fetchAttendanceRecordbyLectureId(widget.lectureId);
   }
 
   @override
@@ -68,66 +37,63 @@ class _AttendancePageState extends State<AttendancePage> {
           },
         ),
         title: Text(
-          DateFormat.yMMMEd().format(DateTime.parse(DateTime.now().toString())),
+          "Attendance Record",
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.check,
-              color: Colors.black,
-            ),
-            onPressed: () => submitAttendance(context),
-          ),
-        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Obx(
           () {
-            if (_apiController.isStudentsLoading.isTrue) {
-              return Center(
-                  child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Color(0xff0097B2))));
+            if (_apiController.isRecordsLoading.isTrue) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (_apiController.attendanceRecords.isEmpty) {
+              return const Center(child: Text("No Records Found !"));
             } else {
               return ListView.builder(
-                itemCount: _apiController.students.length,
+                itemCount: _apiController.attendanceRecords.length,
                 itemBuilder: (context, index) {
-                  int studentId =
-                      int.parse(_apiController.students[index].id.toString());
                   return Obx(() {
-                    bool isSelected =
-                        _apiController.selectedStudents.contains(studentId);
                     return Card(
                       child: ListTile(
                         title: Text(
-                            _apiController.students[index].rollNumber
-                                .toString(),
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Color(0xff0097B2),
-                                fontWeight: FontWeight.bold)),
+                          (_apiController
+                                  .attendanceRecords[index].student?.rollNumber)
+                              .toString(),
+                          style: TextStyle(
+                              color: Color(0xff0097B2),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
                         subtitle: Text(
-                            _apiController.students[index].name.toString(),
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black54,
-                                fontWeight: FontWeight.normal)),
-                        trailing: isSelected
-                            ? const Icon(Icons.check_box)
-                            : const Icon(Icons.check_box_outline_blank),
-                        onTap: () {
-                          if (isSelected) {
-                            _apiController.selectedStudents.remove(studentId);
-                          } else {
-                            _apiController.selectedStudents.add(studentId);
-                          }
-                        },
+                          (_apiController
+                                  .attendanceRecords[index].student?.name)
+                              .toString(),
+                          style: const TextStyle(
+                              color: Colors.black54, fontSize: 18),
+                        ),
+                        trailing: Icon(
+                            _apiController.attendanceRecords[index].present ??
+                                    false
+                                ? (Icons.check_circle)
+                                : Icons.cancel,
+                            color: _apiController
+                                        .attendanceRecords[index].present ??
+                                    false
+                                ? Colors.green
+                                : Colors.red),
+                        // leading: _apiController.attendanceRecords[index].present !== null?
+                        // onTap: () {
+                        //   if (isSelected) {
+                        //     _apiController.selectedStudents.remove(studentId);
+                        //   } else {
+                        //     _apiController.selectedStudents.add(studentId);
+                        //   }
+                        // },
                       ),
                     );
                   });

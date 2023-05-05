@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:major_app_teacher/features/loginpage/controller/login_controller.dart';
 import 'package:major_app_teacher/features/profile/teacherprofile_page.dart';
 
 class TeacherHomePage extends StatelessWidget {
-  const TeacherHomePage({super.key});
+  TeacherHomePage({super.key});
+  final LoginController loginController = Get.put(LoginController());
+
+  void logoutHandler() {
+    print('loggedout');
+    loginController.logout();
+    Fluttertoast.showToast(
+        msg: "Logged Out Successfully",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Color(0xff23353F),
+        textColor: Colors.white,
+        fontSize: 16.0);
+    Get.toNamed("/");
+  }
 
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
     return Scaffold(
+      backgroundColor: Color(0xff23353F),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,43 +41,33 @@ class TeacherHomePage extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              // Navigate to the new page
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const TeacherProfilePage()
-                                    //TeacherProfilePage()
-
-                                    ),
-                              );
-                            },
-                            child: const CircleAvatar(
-                              radius: 25,
-                              // backgroundImage: AssetImage('assets/images/1.jpg'),
-                            ),
+                          const CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.white,
+                            // backgroundImage: AssetImage('assets/images/1.jpg'),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 10),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
                                   'Welcome !',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal,
-                                    color: Colors.black,
+                                    color: Color(0xff0097B2),
                                   ),
                                 ),
+                                const SizedBox(
+                                  height: 2,
+                                ),
                                 Text(
-                                  'Aman Shakya',
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                  loginController.teacherName.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 18,
                                     fontWeight: FontWeight.normal,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ],
@@ -66,16 +75,24 @@ class TeacherHomePage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      IconButton(
-                          icon: const Icon(Icons.notifications),
-                          onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => const InternalMarksSubmissionDetailsPage(),
-                            //   ),
-                            // );
-                          }),
+                      Row(
+                        children: [
+                          IconButton(
+                              icon: const Icon(
+                                Icons.notifications,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(context, "/notice");
+                              }),
+                          IconButton(
+                              icon: const Icon(
+                                Icons.logout,
+                                color: Colors.white,
+                              ),
+                              onPressed: logoutHandler),
+                        ],
+                      ),
                     ],
                   ),
                   const SizedBox(
@@ -101,12 +118,12 @@ class TeacherHomePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 20),
-                        const Text(
+                        Text(
                           'Our Features',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Color(0xff0097B2),
                           ),
                         ),
                         GridView.builder(
@@ -129,7 +146,7 @@ class TeacherHomePage extends StatelessWidget {
                                     child: Column(children: [
                                       Icon(
                                         ourFeaturesList[index].icon,
-                                        color: Colors.blueGrey,
+                                        color: Color(0xff23353F),
                                         size: 40,
                                       ),
                                       const SizedBox(height: 10),
@@ -143,14 +160,14 @@ class TeacherHomePage extends StatelessWidget {
                               );
                             })),
                         const SizedBox(height: 20),
-                        const Text(
-                          'More Features',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
+                        // Text(
+                        //   'More Features',
+                        //   style: TextStyle(
+                        //     fontSize: 14,
+                        //     fontWeight: FontWeight.bold,
+                        //     color: Color(0xff0097B2),
+                        //   ),
+                        // ),
                         GridView.builder(
                             shrinkWrap: true,
                             gridDelegate:
@@ -217,8 +234,6 @@ final List<OurFeatures> ourFeaturesList = [
       name: "Internal Marks",
       icon: Icons.book_outlined,
       navigate: '/internal_marks'),
-  const OurFeatures(
-      name: "Course", icon: Icons.golf_course, navigate: '/create_course'),
 ];
 
 class OtherFeatures {
@@ -230,6 +245,6 @@ class OtherFeatures {
 }
 
 final List<OtherFeatures> otherFeaturesList = [
-  const OtherFeatures(
-      name: "Syllabus", icon: Icons.book_outlined, navigate: '/syllabus'),
+  // const OtherFeatures(
+  //     name: "Syllabus", icon: Icons.book_outlined, navigate: '/syllabus'),
 ];

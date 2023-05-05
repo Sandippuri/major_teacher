@@ -11,6 +11,7 @@ import '../model/notice_model.dart';
 
 class NoticeController extends GetxController {
   final NoticeApiService _noticeApiService = NoticeApiService();
+  var isLoading = true.obs;
   var dataList = <Notice>[].obs;
 
   @override
@@ -22,10 +23,13 @@ class NoticeController extends GetxController {
   Future<void> fetchData() async {
     print("fetchData called");
     try {
+      isLoading(true);
       final data = await _noticeApiService.fetchData();
       dataList.value = data;
     } catch (e) {
       print(e.toString());
+    } finally {
+      isLoading(false);
     }
   }
 }

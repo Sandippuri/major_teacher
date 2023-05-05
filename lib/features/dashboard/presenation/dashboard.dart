@@ -18,16 +18,16 @@ class HomePage extends StatelessWidget {
         body: SafeArea(
           child: IndexedStack(
             index: controller.selectedIndex,
-            children: const [
+            children: [
               TeacherHomePage(),
-              NoticePage(),
-              EventPage(),
+              const NoticePage(),
+              const EventPage(),
             ],
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: const Color.fromARGB(255, 79, 181, 212),
-          unselectedItemColor: Colors.blueGrey[800],
+          selectedItemColor: Color(0xff0097B2),
+          unselectedItemColor: Color(0xff23353F),
           showUnselectedLabels: false,
           onTap: controller.changeIndex,
           selectedFontSize: 12,
